@@ -21,7 +21,7 @@ def __init__(self, nombre: str, fecha: str, tipo: str, resultados: list[float])
 Constructor que inicializa un nuevo experimento. Valida que haya al menos 3 resultados.
 
 ```python
-def diccionario(self) -> dict
+def diccionario(self)
 ```
 Retorna una representación en diccionario del experimento.
 
@@ -35,7 +35,7 @@ Administra la colección de experimentos y proporciona métodos para su gestión
 
 #### Métodos
 ```python
-def agregar_experimentos(self, nombre: str, fecha: str, tipo: str, resultados: list[float]) -> bool
+def agregar_experimentos(self, nombre: str, fecha: str, tipo: str, resultados: list[float])
 ```
 Agrega un nuevo experimento a la colección.
 - **Validaciones**:
@@ -50,7 +50,7 @@ def visualizar_experimentos(self)
 Muestra por consola todos los experimentos almacenados.
 
 ```python
-def analizar_experimento(self, indice: int) -> dict
+def analizar_experimento(self, indice: int)
 ```
 Analiza un experimento específico.
 - **Parámetros**: 
@@ -61,7 +61,7 @@ Analiza un experimento específico.
   - mínimo
 
 ```python
-def generar_informe(self, nombre_archivo: str) -> None
+def generar_informe(self, nombre_archivo: str)
 ```
 Genera un informe en formato TXT con todos los experimentos y sus análisis.
 
