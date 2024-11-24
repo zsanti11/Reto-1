@@ -1,7 +1,20 @@
+# Gestor de Experimentos
+# Este programa permite gestionar experimentos científicos, incluyendo su creación,
+# análisis y comparación de resultados.
+
 from datetime import datetime
 from prettytable import PrettyTable
 
 class Experimento:
+    """
+    Clase que representa un experimento científico.
+    
+    Atributos:
+        nombre (str): Nombre identificativo del experimento
+        fecha (str): Fecha de realización en formato DD/MM/YYYY
+        tipo (str): Tipo de experimento (Química, Biología, Física)
+        resultados (list[float]): Lista de resultados numéricos del experimento
+    """
     def __init__(self, nombre: str, fecha: str, tipo: str, resultados: list[float]):
         if len(resultados) < 3:
             raise ValueError("Se requieren al menos 3 resultados para crear un experimento")    
@@ -11,6 +24,12 @@ class Experimento:
         self.resultados = resultados
 
     def diccionario(self):
+        """
+        Convierte el experimento a un diccionario.
+        
+        Returns:
+            dict: Diccionario con los atributos del experimento
+        """
         return {
             "nombre": self.nombre, 
             "fecha": self.fecha, 
@@ -19,11 +38,30 @@ class Experimento:
         }
 
 class GestorExperimento:
+    """
+    Clase principal para gestionar múltiples experimentos.
+    
+    Atributos:
+        experimentos (list[Experimento]): Lista de experimentos almacenados
+        TiposValidos (list[str]): Tipos de experimentos permitidos
+    """
     def __init__(self):
         self.experimentos: list[Experimento] = []
         self.TiposValidos = ["Quimica", "Biologia", "Fisica"]
 
     def agregar_experimentos(self, nombre: str, fecha: str, tipo: str, resultados: list[float]) -> bool:
+        """
+        Agrega un nuevo experimento a la lista.
+        
+        Args:
+            nombre: Nombre del experimento
+            fecha: Fecha en formato DD/MM/YYYY
+            tipo: Tipo de experimento
+            resultados: Lista de resultados numéricos
+        
+        Returns:
+            bool: True si se agregó correctamente, False si hubo error
+        """
         try:
             if len(resultados) < 3:
                 raise ValueError("Se requieren al menos 3 resultados para crear un experimento")
@@ -41,7 +79,16 @@ class GestorExperimento:
             print(f"Error al agregar el experimento: {str(e)}")
             return False
     
-    def eliminar_experimento(self, indice: int) -> bool:
+    def eliminar_experimento(self, indice: int):
+        """
+        Elimina un experimento según su índice.
+        
+        Args:
+            indice: Posición del experimento a eliminar
+        
+        Returns:
+            bool: True si se eliminó correctamente, False si hubo error
+        """
         try:
             if 0 <= indice < len(self.experimentos):
                 self.experimentos.pop(indice)
@@ -52,6 +99,10 @@ class GestorExperimento:
             return False
         
     def visualizar_experimentos(self):
+        """
+        Muestra una tabla con todos los experimentos almacenados.
+        Utiliza PrettyTable para formatear la salida.
+        """
         if not self.experimentos:
             print("No hay experimentos para ver")
             return
@@ -68,6 +119,16 @@ class GestorExperimento:
         print("\033[95m" + str(tabla) + "\033[0m")
 
     def analizar_experimento(self, indice: int):
+        """
+        Realiza un análisis estadístico básico de un experimento.
+        
+        Args:
+            indice: Índice del experimento a analizar
+        
+        Returns:
+            dict: Diccionario con promedio, máximo y mínimo de los resultados
+                 o diccionario vacío si hay error
+        """
         if 0 <= indice < len(self.experimentos):
             exp = self.experimentos[indice]
             if len(exp.resultados) < 3:
@@ -82,6 +143,12 @@ class GestorExperimento:
         return {}
     
     def comparar_experimentos(self, indices: list[int]):
+        """
+        Compara múltiples experimentos mostrando sus métricas principales.
+        
+        Args:
+            indices: Lista de índices de los experimentos a comparar
+        """
         if not all(0 <= i < len(self.experimentos) for i in indices):
             print("Error: Algunos índices de experimentos no son válidos")
             return
@@ -121,6 +188,12 @@ class GestorExperimento:
         print(f"Peor desempeño: {peor_exp} (promedio: {peor_promedio:.2f})")
     
     def generar_informe(self, nombre_archivo: str):
+        """
+        Genera un informe en formato texto con todos los experimentos y sus análisis.
+        
+        Args:
+            nombre_archivo: Nombre del archivo donde se guardará el informe
+        """
         with open(nombre_archivo, 'w', encoding='utf-8') as f:
             f.write("INFORME DE EXPERIMENTOS\n")
             f.write("=" * 30 + "\n\n")
@@ -143,6 +216,11 @@ class GestorExperimento:
                 f.write("\n")
 
 def main():
+    """
+    Función principal que ejecuta el menú interactivo del programa.
+    Permite al usuario interactuar con todas las funcionalidades del gestor
+    de experimentos mediante un menú de opciones.
+    """
     gestor = GestorExperimento()
     
     while True:
