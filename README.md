@@ -136,13 +136,9 @@ print(f"Promedio: {analisis['promedio']}")
 - Sistema de análisis y comparación
 - Generación de informes
 
-## 📄 Licencia
-
-Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE.md](LICENSE.md) para más detalles.
-
 ## 👤 Autor
 
-[Santiago Valencia Bedoya]
+Santiago Valencia Bedoya
 - GitHub: (https://github.com/zsanti11)
 
 
