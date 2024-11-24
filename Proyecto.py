@@ -25,14 +25,11 @@ class GestorExperimento:
 
     def agregar_experimentos(self, nombre: str, fecha: str, tipo: str, resultados: list[float]) -> bool:
         try:
-            # Validar que haya al menos 3 resultados
             if len(resultados) < 3:
                 raise ValueError("Se requieren al menos 3 resultados para crear un experimento")
             
-            # Validar fecha
             datetime.strptime(fecha, "%d/%m/%Y")
             
-            # Validar tipo
             if tipo not in self.TiposValidos:
                 raise ValueError("Tipo de experimento incorrecto.")
             
@@ -43,13 +40,22 @@ class GestorExperimento:
         except ValueError as e:
             print(f"Error al agregar el experimento: {str(e)}")
             return False
+    
+    def eliminar_experimento(self, indice: int) -> bool:
+        try:
+            if 0 <= indice < len(self.experimentos):
+                self.experimentos.pop(indice)
+                return True
+            raise ValueError("Índice de experimento no válido")
+        except ValueError as e:
+            print(f"Error al eliminar el experimento: {str(e)}")
+            return False
         
     def visualizar_experimentos(self):
         if not self.experimentos:
             print("No hay experimentos para ver")
             return
 
-        # Crear tabla con PrettyTable
         tabla = PrettyTable()
         tabla.field_names = ["#", "Nombre", "Fecha", "Tipo", "Resultados"]
         tabla.align = "l"
@@ -59,7 +65,6 @@ class GestorExperimento:
                 i, exp.nombre, exp.fecha, exp.tipo, ", ".join(map(str, exp.resultados))
             ])
 
-        # Cambiar color de la tabla a morado (si soporta colores)
         print("\033[95m" + str(tabla) + "\033[0m")
 
     def analizar_experimento(self, indice: int):
@@ -75,6 +80,45 @@ class GestorExperimento:
                 "minimo": min(exp.resultados)
             }
         return {}
+    
+    def comparar_experimentos(self, indices: list[int]):
+        if not all(0 <= i < len(self.experimentos) for i in indices):
+            print("Error: Algunos índices de experimentos no son válidos")
+            return
+        
+        tabla = PrettyTable()
+        tabla.field_names = ["Experimento", "Promedio", "Máximo", "Mínimo"]
+        tabla.align = "l"
+        
+        mejor_promedio = float('-inf')
+        peor_promedio = float('inf')
+        mejor_exp = None
+        peor_exp = None
+        
+        for i in indices:
+            exp = self.experimentos[i]
+            analisis = self.analizar_experimento(i)
+            if not analisis:
+                continue
+                
+            tabla.add_row([
+                exp.nombre,
+                f"{analisis['promedio']:.2f}",
+                f"{analisis['maximo']}",
+                f"{analisis['minimo']}"
+            ])
+            
+            if analisis['promedio'] > mejor_promedio:
+                mejor_promedio = analisis['promedio']
+                mejor_exp = exp.nombre
+            if analisis['promedio'] < peor_promedio:
+                peor_promedio = analisis['promedio']
+                peor_exp = exp.nombre
+        
+        print("\nComparación de experimentos:")
+        print("\033[95m" + str(tabla) + "\033[0m")
+        print(f"\nMejor desempeño: {mejor_exp} (promedio: {mejor_promedio:.2f})")
+        print(f"Peor desempeño: {peor_exp} (promedio: {peor_promedio:.2f})")
     
     def generar_informe(self, nombre_archivo: str):
         with open(nombre_archivo, 'w', encoding='utf-8') as f:
@@ -106,8 +150,10 @@ def main():
         print("1. Agregar experimento")
         print("2. Ver experimentos")
         print("3. Analizar experimento")
-        print("4. Generar informe")
-        print("5. Salir")
+        print("4. Comparar experimentos")
+        print("5. Eliminar experimento")
+        print("6. Generar informe")
+        print("7. Salir")
         
         opcion = input("\nSeleccione una opción: ")
         
@@ -142,23 +188,45 @@ def main():
                 indice = int(input("Ingrese el número de experimento a analizar: ")) - 1
                 analisis = gestor.analizar_experimento(indice)
                 if analisis:
+                    tabla = PrettyTable()
+                    tabla.field_names = ["Métrica", "Valor"]
+                    tabla.align = "l"
+                    tabla.add_row(["Promedio", f"{analisis['promedio']:.2f}"])
+                    tabla.add_row(["Máximo", analisis['maximo']])
+                    tabla.add_row(["Mínimo", analisis['minimo']])
                     print("\nResultados del análisis:")
-                    print(f"Promedio: {analisis['promedio']:.2f}")
-                    print(f"Máximo: {analisis['maximo']}")
-                    print(f"Mínimo: {analisis['minimo']}")
+                    print("\033[95m" + str(tabla) + "\033[0m")
                 else:
                     print("Experimento no encontrado o no tiene suficientes resultados")
             except ValueError:
                 print("Por favor ingrese un número válido")
-            
+                
         elif opcion == "4":
+            gestor.visualizar_experimentos()
+            try:
+                indices = input("Ingrese los números de experimentos a comparar (separados por comas): ")
+                indices = [int(i.strip()) - 1 for i in indices.split(",")]
+                gestor.comparar_experimentos(indices)
+            except ValueError:
+                print("Por favor ingrese números válidos separados por comas")
+                
+        elif opcion == "5":
+            gestor.visualizar_experimentos()
+            try:
+                indice = int(input("Ingrese el número de experimento a eliminar: ")) - 1
+                if gestor.eliminar_experimento(indice):
+                    print("Experimento eliminado exitosamente")
+            except ValueError:
+                print("Por favor ingrese un número válido")
+            
+        elif opcion == "6":
             nombre_archivo = input("Nombre del archivo para el informe: ")
             if not nombre_archivo.endswith('.txt'):
                 nombre_archivo += '.txt'
             gestor.generar_informe(nombre_archivo)
             print(f"Informe generado exitosamente en {nombre_archivo}")
             
-        elif opcion == "5":
+        elif opcion == "7":
             print("¡Adiós!")
             break
         
