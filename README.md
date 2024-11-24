@@ -1,142 +1,151 @@
-# Sistema de Gestión de Experimentos
-## Descripción General
-Este sistema permite gestionar experimentos científicos de diferentes tipos (Química, Biología, Física), incluyendo la capacidad de agregar, visualizar, analizar y generar informes de los experimentos realizados.
+# Sistema de Gestión de Experimentos Científicos 🧪
 
-## Estructura del Código
+Un sistema robusto para la gestión y análisis de experimentos de laboratorio desarrollado en Python. Esta aplicación permite a los investigadores y estudiantes registrar, analizar y documentar experimentos científicos de manera sistemática y eficiente.
 
-### Clase `Experimento`
-#### Descripción
-Representa un experimento individual con sus propiedades básicas.
+## 🌟 Características Principales
 
-#### Atributos
-- `nombre` (str): Nombre identificativo del experimento
-- `fecha` (str): Fecha de realización del experimento en formato DD/MM/YYYY
-- `tipo` (str): Tipo de experimento (Química, Biología o Física)
-- `resultados` (list[float]): Lista de resultados numéricos del experimento
+- ✅ Gestión completa de experimentos (crear, ver, analizar, eliminar)
+- 📊 Análisis estadístico de resultados
+- 📈 Comparación entre múltiples experimentos
+- 📝 Generación de informes detallados
+- 🔍 Validación robusta de datos
+- 🎯 Interfaz de usuario interactiva mediante menú de consola
 
-#### Métodos
-```python
-def __init__(self, nombre: str, fecha: str, tipo: str, resultados: list[float])
+## 🛠️ Tecnologías Utilizadas
+
+- Python 3.x
+- PrettyTable (para visualización de datos tabulares)
+- Módulo datetime (para manejo y validación de fechas)
+
+## 📋 Requisitos Previos
+
+```bash
+pip install prettytable
 ```
-Constructor que inicializa un nuevo experimento. Valida que haya al menos 3 resultados.
 
-```python
-def diccionario(self)
+## 🚀 Instalación y Uso
+
+1. Clona el repositorio:
+```bash
+git clone [https://github.com/zsanti11/Reto-1]
+cd gestor-experimentos
 ```
-Retorna una representación en diccionario del experimento.
 
-### Clase `GestorExperimento`
-#### Descripción
-Administra la colección de experimentos y proporciona métodos para su gestión.
-
-#### Atributos
-- `experimentos` (list[Experimento]): Lista de experimentos almacenados
-- `TiposValidos` (list[str]): Lista de tipos de experimentos válidos
-
-#### Métodos
-```python
-def agregar_experimentos(self, nombre: str, fecha: str, tipo: str, resultados: list[float])
+2. Instala las dependencias:
+```bash
+pip install -r requirements.txt
 ```
-Agrega un nuevo experimento a la colección.
-- **Validaciones**:
-  - Mínimo 3 resultados
-  - Formato de fecha válido (DD/MM/YYYY)
-  - Tipo de experimento válido
-- **Retorna**: `True` si se agregó correctamente, `False` en caso contrario
 
-```python
-def visualizar_experimentos(self)
+3. Ejecuta el programa:
+```bash
+python main.py
 ```
-Muestra por consola todos los experimentos almacenados.
 
-```python
-def analizar_experimento(self, indice: int)
-```
-Analiza un experimento específico.
-- **Parámetros**: 
-  - `indice`: Posición del experimento en la lista
-- **Retorna**: Diccionario con estadísticas básicas:
-  - promedio
-  - máximo
-  - mínimo
+## 💡 Guía de Uso
 
-```python
-def generar_informe(self, nombre_archivo: str)
-```
-Genera un informe en formato TXT con todos los experimentos y sus análisis.
-
-### Función `main()`
-#### Descripción
-Punto de entrada del programa que implementa un menú interactivo con las siguientes opciones:
+### Menú Principal
+El sistema presenta las siguientes opciones:
 1. Agregar experimento
 2. Ver experimentos
 3. Analizar experimento
-4. Generar informe
-5. Salir
+4. Comparar experimentos
+5. Eliminar experimento
+6. Generar informe
+7. Salir
 
-## Flujo de Trabajo
+### Agregar un Experimento
+- Ingresa el nombre del experimento
+- Proporciona la fecha (formato DD/MM/YYYY)
+- Selecciona el tipo (Química, Biología, Física)
+- Ingresa al menos 3 resultados numéricos
 
-1. **Agregar Experimento**:
-   - Solicita nombre, fecha, tipo y resultados
-   - Valida los datos ingresados
-   - Agrega el experimento si los datos son válidos
+### Análisis de Resultados
+El sistema calcula automáticamente:
+- Promedio de resultados
+- Valor máximo
+- Valor mínimo
 
-2. **Visualizar Experimentos**:
-   - Muestra lista numerada de experimentos
-   - Presenta detalles de cada experimento
+### Comparación de Experimentos
+Permite comparar múltiples experimentos mostrando:
+- Tabla comparativa de métricas
+- Identificación del mejor y peor desempeño
+- Análisis estadístico comparativo
 
-3. **Analizar Experimento**:
-   - Muestra lista de experimentos
-   - Permite seleccionar uno por número
-   - Presenta análisis estadístico básico
+### Generación de Informes
+Crea informes detallados en formato .txt que incluyen:
+- Detalles de todos los experimentos
+- Análisis estadísticos
+- Resumen de resultados
 
-4. **Generar Informe**:
-   - Solicita nombre del archivo
-   - Crea archivo TXT con información detallada
-   - Incluye análisis de cada experimento
+## 🔍 Estructura del Código
 
-## Validaciones y Manejo de Errores
+### Clases Principales
 
-### Validaciones Implementadas
-- Mínimo 3 resultados por experimento
-- Formato de fecha (DD/MM/YYYY)
-- Tipo de experimento válido
-- Conversión de resultados a números flotantes
-- Índices válidos para análisis
+#### `Experimento`
+Representa un experimento individual con sus atributos:
+- `nombre`: Nombre del experimento
+- `fecha`: Fecha de realización
+- `tipo`: Categoría del experimento
+- `resultados`: Lista de resultados numéricos
 
-### Manejo de Excepciones
-- `ValueError` para errores de validación
-- Manejo de errores en entrada de usuario
-- Validación de formato de números
+#### `GestorExperimento`
+Maneja la lógica principal del sistema:
+- Gestión de experimentos
+- Validaciones
+- Análisis de datos
+- Generación de informes
 
-## Requisitos y Dependencias
-- Python 3.x
-- Módulo `datetime` de la biblioteca estándar
+## 🔐 Validaciones Implementadas
 
-## Limitaciones y Consideraciones
-- Los resultados deben ser valores numéricos
-- La fecha debe seguir estrictamente el formato DD/MM/YYYY
-- Los tipos de experimento están limitados a Química, Biología y Física
-- Los informes se generan únicamente en formato TXT
-- No hay persistencia de datos entre ejecuciones
+- Formato de fecha válido (DD/MM/YYYY)
+- Tipos de experimento permitidos
+- Mínimo de 3 resultados por experimento
+- Validación de datos numéricos
+- Índices válidos para operaciones
 
-## Ejemplos de Uso
+## 📊 Ejemplo de Uso
 
 ```python
-# Crear un nuevo gestor
+# Crear un nuevo experimento
 gestor = GestorExperimento()
-
-# Agregar un experimento
 gestor.agregar_experimentos(
     nombre="Prueba pH",
-    fecha="23/11/2024",
+    fecha="24/11/2024",
     tipo="Quimica",
-    resultados=[7.0, 7.2, 7.1, 7.3]
+    resultados=[7.2, 7.4, 7.1, 7.3]
 )
 
-# Analizar un experimento específico
+# Analizar resultados
 analisis = gestor.analizar_experimento(0)
-
-# Generar informe
-gestor.generar_informe("informe_experimentos.txt")
+print(f"Promedio: {analisis['promedio']}")
 ```
+
+## 🤝 Contribución
+
+1. Haz un Fork del proyecto
+2. Crea una rama para tu característica (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add: AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
+
+## 📝 Notas de la Versión
+
+### Versión 1.0.0
+- Implementación inicial del sistema
+- Funcionalidades básicas de gestión de experimentos
+- Sistema de análisis y comparación
+- Generación de informes
+
+## 📄 Licencia
+
+Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE.md](LICENSE.md) para más detalles.
+
+## 👤 Autor
+
+[Santiago Valencia Bedoya]
+- GitHub: (https://github.com/zsanti11)
+
+
+## ✨ Librerias
+
+-Librerias usadas: Datetime, Prettytable
