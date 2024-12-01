@@ -1,227 +1,231 @@
-# Gestor de Experimentos
-# Este programa permite gestionar experimentos científicos, incluyendo su creación,
-# análisis y comparación de resultados.
-
 from datetime import datetime
 from prettytable import PrettyTable
 
-class Experimento:
+# Tipos válidos de experimentos
+TIPOS_VALIDOS = ["Quimica", "Biologia", "Fisica".lower()]
+
+def validar_experimento(nombre, fecha, tipo, resultados):
     """
-    Clase que representa un experimento científico.
+    Valida los datos de un experimento antes de agregarlo.
     
-    Atributos:
-        nombre (str): Nombre identificativo del experimento
-        fecha (str): Fecha de realización en formato DD/MM/YYYY
-        tipo (str): Tipo de experimento (Química, Biología, Física)
-        resultados (list[float]): Lista de resultados numéricos del experimento
+    Args:
+        nombre (str): Nombre del experimento
+        fecha (str): Fecha del experimento
+        tipo (str): Tipo de experimento
+        resultados (list): Lista de resultados numéricos
+    
+    Returns:
+        bool: True si el experimento es válido, False en caso contrario
     """
-    def __init__(self, nombre: str, fecha: str, tipo: str, resultados: list[float]):
+    try:
+        # Validación de número de resultados
         if len(resultados) < 3:
-            raise ValueError("Se requieren al menos 3 resultados para crear un experimento")    
-        self.nombre = nombre
-        self.fecha = fecha
-        self.tipo = tipo
-        self.resultados = resultados
-
-    def diccionario(self):
-        """
-        Convierte el experimento a un diccionario.
-        
-        Returns:
-            dict: Diccionario con los atributos del experimento
-        """
-        return {
-            "nombre": self.nombre, 
-            "fecha": self.fecha, 
-            "tipo": self.tipo,
-            "resultados": self.resultados
-        }
-
-class GestorExperimento:
-    """
-    Clase principal para gestionar múltiples experimentos.
-    
-    Atributos:
-        experimentos (list[Experimento]): Lista de experimentos almacenados
-        TiposValidos (list[str]): Tipos de experimentos permitidos
-    """
-    def __init__(self):
-        self.experimentos: list[Experimento] = []
-        self.TiposValidos = ["Quimica", "Biologia", "Fisica"]
-
-    def agregar_experimentos(self, nombre: str, fecha: str, tipo: str, resultados: list[float]) -> bool:
-        """
-        Agrega un nuevo experimento a la lista.
-        
-        Args:
-            nombre: Nombre del experimento
-            fecha: Fecha en formato DD/MM/YYYY
-            tipo: Tipo de experimento
-            resultados: Lista de resultados numéricos
-        
-        Returns:
-            bool: True si se agregó correctamente, False si hubo error
-        """
-        try:
-            if len(resultados) < 3:
-                raise ValueError("Se requieren al menos 3 resultados para crear un experimento")
-            
-            datetime.strptime(fecha, "%d/%m/%Y")
-            
-            if tipo not in self.TiposValidos:
-                raise ValueError("Tipo de experimento incorrecto.")
-            
-            nuevo_experimento = Experimento(nombre, fecha, tipo, resultados)
-            self.experimentos.append(nuevo_experimento)
-            return True
-        
-        except ValueError as e:
-            print(f"Error al agregar el experimento: {str(e)}")
-            return False
-    
-    def eliminar_experimento(self, indice: int):
-        """
-        Elimina un experimento según su índice.
-        
-        Args:
-            indice: Posición del experimento a eliminar
-        
-        Returns:
-            bool: True si se eliminó correctamente, False si hubo error
-        """
-        try:
-            if 0 <= indice < len(self.experimentos):
-                self.experimentos.pop(indice)
-                return True
-            raise ValueError("Índice de experimento no válido")
-        except ValueError as e:
-            print(f"Error al eliminar el experimento: {str(e)}")
+            print("Error: Se requieren al menos 3 resultados")
             return False
         
-    def visualizar_experimentos(self):
-        """
-        Muestra una tabla con todos los experimentos almacenados.
-        Utiliza PrettyTable para formatear la salida.
-        """
-        if not self.experimentos:
-            print("No hay experimentos para ver")
-            return
-
-        tabla = PrettyTable()
-        tabla.field_names = ["#", "Nombre", "Fecha", "Tipo", "Resultados"]
-        tabla.align = "l"
+        # Validación de formato de fecha
+        datetime.strptime(fecha, "%d/%m/%Y")
         
-        for i, exp in enumerate(self.experimentos, 1):
-            tabla.add_row([
-                i, exp.nombre, exp.fecha, exp.tipo, ", ".join(map(str, exp.resultados))
-            ])
-
-        print("\033[95m" + str(tabla) + "\033[0m")
-
-    def analizar_experimento(self, indice: int):
-        """
-        Realiza un análisis estadístico básico de un experimento.
+        # Validación de tipo de experimento
+        if tipo not in TIPOS_VALIDOS:
+            print("Error: Tipo de experimento incorrecto")
+            return False
         
-        Args:
-            indice: Índice del experimento a analizar
-        
-        Returns:
-            dict: Diccionario con promedio, máximo y mínimo de los resultados
-                 o diccionario vacío si hay error
-        """
-        if 0 <= indice < len(self.experimentos):
-            exp = self.experimentos[indice]
-            if len(exp.resultados) < 3:
-                print("Error: Se requieren al menos 3 resultados para realizar el análisis")
-                return {}
-            
-            return {
-                "promedio": sum(exp.resultados) / len(exp.resultados),
-                "maximo": max(exp.resultados),
-                "minimo": min(exp.resultados)
-            }
+        return True
+    
+    except ValueError as e:
+        print(f"Error de validación: {str(e)}")
+        return False
+
+def crear_experimento(nombre, fecha, tipo, resultados):
+    """
+    Crea un diccionario que representa un experimento.
+    
+    Args:
+        nombre (str): Nombre del experimento
+        fecha (str): Fecha del experimento
+        tipo (str): Tipo de experimento
+        resultados (list): Lista de resultados numéricos
+    
+    Returns:
+        dict: Diccionario con los datos del experimento
+    """
+    return {
+        "nombre": nombre, 
+        "fecha": fecha, 
+        "tipo": tipo,
+        "resultados": resultados
+    }
+
+def agregar_experimento(experimentos, nombre, fecha, tipo, resultados):
+    """
+    Agrega un nuevo experimento a la lista de experimentos.
+    
+    Args:
+        experimentos (list): Lista de experimentos existentes
+        nombre (str): Nombre del experimento
+        fecha (str): Fecha del experimento
+        tipo (str): Tipo de experimento
+        resultados (list): Lista de resultados numéricos
+    
+    Returns:
+        list: Lista actualizada de experimentos
+    """
+    if validar_experimento(nombre, fecha, tipo, resultados):
+        nuevo_experimento = crear_experimento(nombre, fecha, tipo, resultados)
+        experimentos.append(nuevo_experimento)
+        print("Experimento agregado exitosamente")
+    return experimentos
+
+def eliminar_experimento(experimentos, indice):
+    """
+    Elimina un experimento de la lista según su índice.
+    
+    Args:
+        experimentos (list): Lista de experimentos
+        indice (int): Índice del experimento a eliminar
+    
+    Returns:
+        list: Lista actualizada de experimentos
+    """
+    try:
+        if 0 <= indice < len(experimentos):
+            del experimentos[indice]
+            print("Experimento eliminado exitosamente")
+        else:
+            print("Índice de experimento no válido")
+    except Exception as e:
+        print(f"Error al eliminar el experimento: {str(e)}")
+    
+    return experimentos
+
+def visualizar_experimentos(experimentos):
+    """
+    Muestra una tabla con todos los experimentos almacenados.
+    
+    Args:
+        experimentos (list): Lista de experimentos
+    """
+    if not experimentos:
+        print("No hay experimentos para ver")
+        return
+
+    tabla = PrettyTable()
+    tabla.field_names = ["#", "Nombre", "Fecha", "Tipo", "Resultados"]
+    tabla.align = "l"
+    
+    for i, exp in enumerate(experimentos, 1):
+        tabla.add_row([
+            i, exp['nombre'], exp['fecha'], exp['tipo'], 
+            ", ".join(map(str, exp['resultados']))
+        ])
+
+    print("\033[95m" + str(tabla) + "\033[0m")
+
+def analizar_experimento(experimento):
+    """
+    Realiza un análisis estadístico básico de un experimento.
+    
+    Args:
+        experimento (dict): Diccionario de un experimento
+    
+    Returns:
+        dict: Diccionario con promedio, máximo y mínimo de los resultados
+    """
+    resultados = experimento['resultados']
+    if len(resultados) < 3:
+        print("Error: Se requieren al menos 3 resultados para realizar el análisis")
         return {}
     
-    def comparar_experimentos(self, indices: list[int]):
-        """
-        Compara múltiples experimentos mostrando sus métricas principales.
-        
-        Args:
-            indices: Lista de índices de los experimentos a comparar
-        """
-        if not all(0 <= i < len(self.experimentos) for i in indices):
-            print("Error: Algunos índices de experimentos no son válidos")
-            return
-        
-        tabla = PrettyTable()
-        tabla.field_names = ["Experimento", "Promedio", "Máximo", "Mínimo"]
-        tabla.align = "l"
-        
-        mejor_promedio = float('-inf')
-        peor_promedio = float('inf')
-        mejor_exp = None
-        peor_exp = None
-        
-        for i in indices:
-            exp = self.experimentos[i]
-            analisis = self.analizar_experimento(i)
-            if not analisis:
-                continue
-                
-            tabla.add_row([
-                exp.nombre,
-                f"{analisis['promedio']:.2f}",
-                f"{analisis['maximo']}",
-                f"{analisis['minimo']}"
-            ])
+    return {
+        "promedio": sum(resultados) / len(resultados),
+        "maximo": max(resultados),
+        "minimo": min(resultados)
+    }
+
+def comparar_experimentos(experimentos, indices):
+    """
+    Compara múltiples experimentos mostrando sus métricas principales.
+    
+    Args:
+        experimentos (list): Lista de experimentos
+        indices (list): Lista de índices de los experimentos a comparar
+    """
+    if not all(0 <= i < len(experimentos) for i in indices):
+        print("Error: Algunos índices de experimentos no son válidos")
+        return
+    
+    tabla = PrettyTable()
+    tabla.field_names = ["Experimento", "Promedio", "Máximo", "Mínimo"]
+    tabla.align = "l"
+    
+    mejor_promedio = float('-inf')
+    peor_promedio = float('inf')
+    mejor_exp = None
+    peor_exp = None
+    
+    for i in indices:
+        exp = experimentos[i]
+        analisis = analizar_experimento(exp)
+        if not analisis:
+            continue
             
-            if analisis['promedio'] > mejor_promedio:
-                mejor_promedio = analisis['promedio']
-                mejor_exp = exp.nombre
-            if analisis['promedio'] < peor_promedio:
-                peor_promedio = analisis['promedio']
-                peor_exp = exp.nombre
+        tabla.add_row([
+            exp['nombre'],
+            f"{analisis['promedio']:.2f}",
+            f"{analisis['maximo']}",
+            f"{analisis['minimo']}"
+        ])
         
-        print("\nComparación de experimentos:")
-        print("\033[95m" + str(tabla) + "\033[0m")
+        if analisis['promedio'] > mejor_promedio:
+            mejor_promedio = analisis['promedio']
+            mejor_exp = exp['nombre']
+        if analisis['promedio'] < peor_promedio:
+            peor_promedio = analisis['promedio']
+            peor_exp = exp['nombre']
+    
+    print("\nComparación de experimentos:")
+    print("\033[95m" + str(tabla) + "\033[0m")
+    
+    if mejor_exp and peor_exp:
         print(f"\nMejor desempeño: {mejor_exp} (promedio: {mejor_promedio:.2f})")
         print(f"Peor desempeño: {peor_exp} (promedio: {peor_promedio:.2f})")
+
+def generar_informe(experimentos, nombre_archivo):
+    """
+    Genera un informe en formato texto con todos los experimentos y sus análisis.
     
-    def generar_informe(self, nombre_archivo: str):
-        """
-        Genera un informe en formato texto con todos los experimentos y sus análisis.
+    Args:
+        experimentos (list): Lista de experimentos
+        nombre_archivo (str): Nombre del archivo de informe
+    """
+    with open(nombre_archivo, 'w', encoding='utf-8') as f:
+        f.write("INFORME DE EXPERIMENTOS\n")
+        f.write("=" * 30 + "\n\n")
         
-        Args:
-            nombre_archivo: Nombre del archivo donde se guardará el informe
-        """
-        with open(nombre_archivo, 'w', encoding='utf-8') as f:
-            f.write("INFORME DE EXPERIMENTOS\n")
-            f.write("=" * 30 + "\n\n")
+        for i, exp in enumerate(experimentos, 1):
+            f.write(f"Experimento #{i}\n")
+            f.write(f"Nombre: {exp['nombre']}\n")
+            f.write(f"Fecha: {exp['fecha']}\n")
+            f.write(f"Tipo: {exp['tipo']}\n")
+            f.write(f"Resultados: {exp['resultados']}\n")
             
-            for i, exp in enumerate(self.experimentos, 1):
-                f.write(f"Experimento #{i}\n")
-                f.write(f"Nombre: {exp.nombre}\n")
-                f.write(f"Fecha: {exp.fecha}\n")
-                f.write(f"Tipo: {exp.tipo}\n")
-                f.write(f"Resultados: {exp.resultados}\n")
-                
-                if len(exp.resultados) >= 3:
-                    analisis = self.analizar_experimento(i-1)
-                    f.write(f"Análisis de resultados:\n")
-                    f.write(f"- Promedio: {analisis.get('promedio', 0):.2f}\n")
-                    f.write(f"- Máximo: {analisis.get('maximo', 0)}\n")
-                    f.write(f"- Mínimo: {analisis.get('minimo', 0)}\n")
-                else:
-                    f.write("No hay suficientes resultados para realizar el análisis (mínimo 3)\n")
-                f.write("\n")
+            if len(exp['resultados']) >= 3:
+                analisis = analizar_experimento(exp)
+                f.write(f"Análisis de resultados:\n")
+                f.write(f"- Promedio: {analisis.get('promedio', 0):.2f}\n")
+                f.write(f"- Máximo: {analisis.get('maximo', 0)}\n")
+                f.write(f"- Mínimo: {analisis.get('minimo', 0)}\n")
+            else:
+                f.write("No hay suficientes resultados para realizar el análisis (mínimo 3)\n")
+            f.write("\n")
+    print(f"Informe generado en {nombre_archivo}")
 
 def main():
     """
     Función principal que ejecuta el menú interactivo del programa.
-    Permite al usuario interactuar con todas las funcionalidades del gestor
-    de experimentos mediante un menú de opciones.
     """
-    gestor = GestorExperimento()
+    experimentos = []
     
     while True:
         print("\n=== MENÚ PRINCIPAL ===")
@@ -238,7 +242,7 @@ def main():
         if opcion == "1":
             nombre = input("Nombre del experimento: ")
             fecha = input("Fecha (DD/MM/YYYY): ")
-            print("Tipos disponibles:", ", ".join(gestor.TiposValidos))
+            print("Tipos disponibles:", ", ".join(TIPOS_VALIDOS))
             tipo = input("Tipo de experimento: ")
             resultados = []
             print("Ingrese al menos 3 resultados:")
@@ -254,46 +258,47 @@ def main():
                 except ValueError:
                     print("Por favor ingrese un número válido")
             
-            if gestor.agregar_experimentos(nombre, fecha, tipo, resultados):
-                print("Experimento agregado exitosamente")
+            experimentos = agregar_experimento(experimentos, nombre, fecha, tipo, resultados)
             
         elif opcion == "2":
-            gestor.visualizar_experimentos()
+            visualizar_experimentos(experimentos)
             
         elif opcion == "3":
-            gestor.visualizar_experimentos()
+            visualizar_experimentos(experimentos)
             try:
                 indice = int(input("Ingrese el número de experimento a analizar: ")) - 1
-                analisis = gestor.analizar_experimento(indice)
-                if analisis:
-                    tabla = PrettyTable()
-                    tabla.field_names = ["Métrica", "Valor"]
-                    tabla.align = "l"
-                    tabla.add_row(["Promedio", f"{analisis['promedio']:.2f}"])
-                    tabla.add_row(["Máximo", analisis['maximo']])
-                    tabla.add_row(["Mínimo", analisis['minimo']])
-                    print("\nResultados del análisis:")
-                    print("\033[95m" + str(tabla) + "\033[0m")
+                if 0 <= indice < len(experimentos):
+                    analisis = analizar_experimento(experimentos[indice])
+                    if analisis:
+                        tabla = PrettyTable()
+                        tabla.field_names = ["Métrica", "Valor"]
+                        tabla.align = "l"
+                        tabla.add_row(["Promedio", f"{analisis['promedio']:.2f}"])
+                        tabla.add_row(["Máximo", analisis['maximo']])
+                        tabla.add_row(["Mínimo", analisis['minimo']])
+                        print("\nResultados del análisis:")
+                        print("\033[95m" + str(tabla) + "\033[0m")
+                    else:
+                        print("Experimento no encontrado o no tiene suficientes resultados")
                 else:
-                    print("Experimento no encontrado o no tiene suficientes resultados")
+                    print("Número de experimento inválido")
             except ValueError:
                 print("Por favor ingrese un número válido")
                 
         elif opcion == "4":
-            gestor.visualizar_experimentos()
+            visualizar_experimentos(experimentos)
             try:
                 indices = input("Ingrese los números de experimentos a comparar (separados por comas): ")
                 indices = [int(i.strip()) - 1 for i in indices.split(",")]
-                gestor.comparar_experimentos(indices)
+                comparar_experimentos(experimentos, indices)
             except ValueError:
                 print("Por favor ingrese números válidos separados por comas")
                 
         elif opcion == "5":
-            gestor.visualizar_experimentos()
+            visualizar_experimentos(experimentos)
             try:
                 indice = int(input("Ingrese el número de experimento a eliminar: ")) - 1
-                if gestor.eliminar_experimento(indice):
-                    print("Experimento eliminado exitosamente")
+                experimentos = eliminar_experimento(experimentos, indice)
             except ValueError:
                 print("Por favor ingrese un número válido")
             
@@ -301,8 +306,7 @@ def main():
             nombre_archivo = input("Nombre del archivo para el informe: ")
             if not nombre_archivo.endswith('.txt'):
                 nombre_archivo += '.txt'
-            gestor.generar_informe(nombre_archivo)
-            print(f"Informe generado exitosamente en {nombre_archivo}")
+            generar_informe(experimentos, nombre_archivo)
             
         elif opcion == "7":
             print("¡Adiós!")
