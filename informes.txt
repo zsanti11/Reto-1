@@ -1,0 +1,33 @@
+INFORME DE EXPERIMENTOS
+==============================
+
+Experimento #1
+Nombre: prueba 1
+Fecha: 17/08/2022
+Tipo: Quimica
+Resultados: [1.2, 0.9, 5.0]
+Análisis de resultados:
+- Promedio: 2.37
+- Máximo: 5.0
+- Mínimo: 0.9
+
+Experimento #2
+Nombre: prueba 2
+Fecha: 29/09/2024
+Tipo: Quimica
+Resultados: [3.5, 8.9, 4.0]
+Análisis de resultados:
+- Promedio: 5.47
+- Máximo: 8.9
+- Mínimo: 3.5
+
+Experimento #3
+Nombre: prueba 3
+Fecha: 25/11/2020
+Tipo: Biologia
+Resultados: [2.5, 7.0, 9.0]
+Análisis de resultados:
+- Promedio: 6.17
+- Máximo: 9.0
+- Mínimo: 2.5
+
