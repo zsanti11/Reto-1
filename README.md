@@ -12,7 +12,7 @@ Características principales
 - 🔍 Comparación de múltiples experimentos
 - 📝 Generación de informes detallados
 
-## Requisitos previos
+Requisitos previos
 
 - Python 3.8+
 - Librería `prettytable`
@@ -71,6 +71,6 @@ Dependencias
 
 Contacto
 
-Santiago Valencia Bedoya 
+santivalencia816@gmail.com
 
 Enlace del proyecto:(https://github.com/zsanti11/Reto-1)
