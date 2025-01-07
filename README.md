@@ -19,7 +19,7 @@ Requisitos previos
 
 Instalación
 
-2. Instalar dependencias:
+1. Instalar dependencias:
 ```bash
 pip install prettytable
 ```
