@@ -19,12 +19,6 @@ Requisitos previos
 
 Instalación
 
-1. Clonar el repositorio:
-```bash
-git clone https://github.com/tu-usuario/gestor-experimentos.git
-cd gestor-experimentos
-```
-
 2. Instalar dependencias:
 ```bash
 pip install prettytable
